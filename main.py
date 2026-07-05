@@ -106,8 +106,11 @@ async def lifespan(app: FastAPI):
     logger.info("🛑 Mematikan bot...")
     scheduler.shutdown()
     if telegram_app:
-        await telegram_app.stop()
-        await telegram_app.shutdown()
+        try:
+            await telegram_app.stop()
+            await telegram_app.shutdown()
+        except RuntimeError as e:
+            logger.warning(f"⚠️ Shutdown warning (non-critical): {e}")
 
 
 # ======================== FASTAPI APP ========================
