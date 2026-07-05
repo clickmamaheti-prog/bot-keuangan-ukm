@@ -50,7 +50,11 @@ class PremiumRequest(Base):
 
 def init_db(database_url):
     """Inisialisasi koneksi database"""
-    engine = create_engine(database_url)
+    # Untuk SQLite, perlu check_same_thread=False biar aman di FastAPI
+    if database_url.startswith("sqlite"):
+        engine = create_engine(database_url, connect_args={"check_same_thread": False})
+    else:
+        engine = create_engine(database_url)
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     return Session()
@@ -58,6 +62,9 @@ def init_db(database_url):
 
 def get_session(database_url):
     """Buat session database baru"""
-    engine = create_engine(database_url)
+    if database_url.startswith("sqlite"):
+        engine = create_engine(database_url, connect_args={"check_same_thread": False})
+    else:
+        engine = create_engine(database_url)
     Session = sessionmaker(bind=engine)
     return Session()
