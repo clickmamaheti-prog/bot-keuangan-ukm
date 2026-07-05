@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+bot_keuangan.db
+*.db
+*.db-journal
