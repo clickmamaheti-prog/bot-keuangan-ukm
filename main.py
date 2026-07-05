@@ -73,14 +73,17 @@ async def lifespan(app: FastAPI):
     # Setup webhook atau polling
     bot_url = WEBHOOK_URL or os.getenv("RAILWAY_URL", "")
     
+    # Inisialisasi aplikasi untuk semua mode
+    await telegram_app.initialize()
+    
     if bot_url:
-        # Webhook mode (Railway)
+        # Webhook mode (Render / Railway)
+        await telegram_app.start()
         webhook_url = f"{bot_url}/webhook"
         await telegram_app.bot.set_webhook(url=webhook_url)
         logger.info(f"✅ Webhook set: {webhook_url}")
     else:
         # Polling mode (development)
-        await telegram_app.initialize()
         await telegram_app.start()
         asyncio.create_task(telegram_app.updater.start_polling())
         logger.info("✅ Polling mode started")
